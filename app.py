@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,12 +16,23 @@ class Tune(db.Model):
     def __repr__(self):
         return '<Tune %r>' % self.id
 
-
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
-    return render_template('index.html')
-
-
+    if request.method == 'POST':
+        tune = request.form['content']
+        new_tune = Tune(content=tune)
+        
+        try:
+            db.session.add(new_tune)
+            db.session.commit()
+            return redirect('/')
+        except:
+            return('Issue while adding a new tune')
+        
+    else:
+        all_tunes = Tune.query.order_by(Tune.date_created).all()
+        return render_template('index.html', all_tunes=all_tunes)
 
 if __name__=='__main__':
     app.run(debug=True)
+

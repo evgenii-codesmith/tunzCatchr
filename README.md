@@ -1,1 +1,1 @@
-A small app written in Flask to store my favourite progressive tunes off the YouTube.
+A small app written in Flask/SQLite to store my favourite progressive tunes off the YouTube.

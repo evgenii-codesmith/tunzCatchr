@@ -5,5 +5,34 @@
 {% endblock %}
 
 {% block body %}
-<p>Tunes list</p>
+
+<div class='content'>
+        <div id='app_name'>Tunes list</div>
+        <table>
+            <tr>
+                <th>Tune</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+            {% for tune in all_tunes %}
+            <tr>
+                <td>{{ tune.content }}</td>
+                <td>{{ tune.date_created }}</td>
+                <td>
+                    <a href="">Delete</a>
+                    <br>
+                    <a href="">Update</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <form action='/' method="post">
+            <div>
+                <input type="text" name="content" autofocus>
+                <input type="submit" value="Add">
+            </div>
+        </form>
+</div>
+    
 {% endblock %}
