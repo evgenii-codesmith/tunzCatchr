@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<h2>Tunes</h2>
+{% endblock %}
+
+{% block body %}
+
+<div class='content'>
+        <div id='app_name'>Edit tune {{ tune.id }}</div>
+        <form action='/update/{{ tune.id }}' method="post">
+            <div>
+                <input type="url" name="new_content" value="{{ tune.content}}" autofocus>
+                <label for="downloaded">Downloaded</label>
+                <select id="downloaded" name="downloaded" >
+                    <option>Yes</option>
+                    <option selected>No</option>
+                </select>
+                
+                <input type="submit" value="Update">
+            </div>
+        </form>
+</div>
+    
+{% endblock %}

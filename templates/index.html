@@ -7,29 +7,34 @@
 {% block body %}
 
 <div class='content'>
+        {% if tunes|length < 1 %}
+            <div>No tunes saved yet, add a new entry below</div>
+        {% else %}
         <div id='app_name'>Tunes list</div>
         <table>
             <tr>
                 <th>Tune</th>
                 <th>Added</th>
+                <th>Downloaded</th>
                 <th>Actions</th>
             </tr>
-            {% for tune in all_tunes %}
+            {% for tune in tunes %}
             <tr>
                 <td>{{ tune.content }}</td>
                 <td>{{ tune.date_created }}</td>
+                <td>{{ tune.downloaded }}</td>
                 <td>
-                    <a href="">Delete</a>
+                    <a href="/delete/{{ tune.id }}">Delete</a>
                     <br>
-                    <a href="">Update</a>
+                    <a href="/update/{{ tune.id }}">Update</a>
                 </td>
             </tr>
             {% endfor %}
         </table>
-
+        {% endif %}
         <form action='/' method="post">
             <div>
-                <input type="text" name="content" autofocus>
+                <input type="url" id='url' name="content" autofocus>
                 <input type="submit" value="Add">
             </div>
         </form>
