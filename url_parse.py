@@ -3,9 +3,7 @@ from bs4 import BeautifulSoup
 
 def get_tune_data(url):
 
-    # youtube_url = 'https://www.youtube.com/watch?v=GoFQHjneFFI'
-    youtube_url = url
-    response = requests.get(youtube_url)
+    response = requests.get(url)
     page = response.text
     soup = BeautifulSoup(page,'html.parser')
     title = soup.select('#eow-title')[0].text.strip()       
@@ -18,8 +16,4 @@ def get_tune_data(url):
     if index > 0:
         tune_name = tune_name[:index]
 
-    print('Artist: ',artist, 'Tune:', tune_name)
-    
-    # artist = 'Rolo Green'
-    # tune_name = 'Cool track (Original Mix)'  
     return(artist, tune_name)
