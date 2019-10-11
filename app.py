@@ -25,7 +25,6 @@ def index():
         tune_url = request.form['url']
         artist, tune_name = get_tune_data(tune_url)
         new_tune = Tune(url=tune_url, artist=artist, tune_name=tune_name)
-        
         try:
             db.session.add(new_tune)
             db.session.commit()
