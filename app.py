@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+from url_parse import get_tune_data
 
 app = Flask(__name__)
 
@@ -9,7 +10,9 @@ db = SQLAlchemy(app)
 
 class Tune(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
+    url = db.Column(db.String(200), nullable=False)
+    artist = db.Column(db.String(100),nullable=True)
+    tune_name = db.Column(db.String(100),nullable=True)
     downloaded = db.Column(db.Boolean, default=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -19,8 +22,9 @@ class Tune(db.Model):
 @app.route('/', methods=['POST', 'GET'])
 def index():
     if request.method == 'POST':
-        tune = request.form['content']
-        new_tune = Tune(content=tune)
+        tune_url = request.form['url']
+        artist, tune_name = get_tune_data(tune_url)
+        new_tune = Tune(url=tune_url, artist=artist, tune_name=tune_name)
         
         try:
             db.session.add(new_tune)
@@ -50,7 +54,9 @@ def update(id):
     target_tune = Tune.query.get_or_404(id)
     
     if request.method == 'POST':
-        target_tune.content = request.form['new_content']
+        target_tune.url = request.form['new_url']
+        target_tune.artist = request.form['new_artist']
+        target_tune.tune_name = request.form['new_tune_name']
         downloaded = request.form['downloaded']
 
         if downloaded == 'Yes':

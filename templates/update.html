@@ -10,7 +10,12 @@
         <div id='app_name'>Edit tune {{ tune.id }}</div>
         <form action='/update/{{ tune.id }}' method="post">
             <div>
-                <input type="url" name="new_content" value="{{ tune.content}}" autofocus>
+                <label for="new_url">Url</label>
+                <input type="url" name="new_url" value="{{ tune.url}}" autofocus>
+                <label for="new_artist">Artist</label>
+                <input type="text" name="new_artist" value="{{ tune.artist }}">
+                <label for="new_tune_name">Tune</label>
+                <input type="text" name="new_tune_name" value="{{ tune.tune_name }}">
                 <label for="downloaded">Downloaded</label>
                 <select id="downloaded" name="downloaded" >
                     <option>Yes</option>

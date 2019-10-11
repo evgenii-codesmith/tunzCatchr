@@ -7,12 +7,20 @@
 {% block body %}
 
 <div class='content'>
+        <form action='/' method="post">
+            <div>
+                <input type="url" id='url' name="url" autofocus>
+                <input type="submit" value="Add">
+            </div>
+        </form>
         {% if tunes|length < 1 %}
-            <div>No tunes saved yet, add a new entry below</div>
+            <div>No tunes saved yet, add a new entry</div>
         {% else %}
         <div id='app_name'>Tunes list</div>
         <table>
             <tr>
+                <th>url</th>
+                <th>Artist</th>
                 <th>Tune</th>
                 <th>Added</th>
                 <th>Downloaded</th>
@@ -20,7 +28,9 @@
             </tr>
             {% for tune in tunes %}
             <tr>
-                <td>{{ tune.content }}</td>
+                <td>{{ tune.url }}</td>
+                <td>{{ tune.artist }}</td>
+                <td>{{ tune.tune_name }}</td>
                 <td>{{ tune.date_created }}</td>
                 <td>{{ tune.downloaded }}</td>
                 <td>
@@ -32,12 +42,6 @@
             {% endfor %}
         </table>
         {% endif %}
-        <form action='/' method="post">
-            <div>
-                <input type="url" id='url' name="content" autofocus>
-                <input type="submit" value="Add">
-            </div>
-        </form>
 </div>
     
 {% endblock %}
