@@ -45,7 +45,6 @@ def delete(id):
         db.session.delete(target_tune)
         db.session.commit()
         return redirect('/')
-        
     except:
         return 'Unable to delete tune %s' % id
 
@@ -75,4 +74,3 @@ def update(id):
 
 if __name__=='__main__':
     app.run(debug=True)
-
