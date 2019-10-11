@@ -39,7 +39,6 @@ def index():
 @app.route('/delete/<int:id>')
 def delete(id):
     target_tune = Tune.query.get_or_404(id)
-    
     try:
         db.session.delete(target_tune)
         db.session.commit()
