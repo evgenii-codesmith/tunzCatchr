@@ -2,10 +2,13 @@ from flask import Flask, render_template, request, redirect
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from url_parse import get_tune_data
+from file_download import get_file_from_youtube
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tunes.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 class Tune(db.Model):
@@ -69,6 +72,17 @@ def update(id):
             return 'Unable to update'
     else:
         return render_template('update.html', tune=target_tune)
+
+@app.route('/download/<int:id>', methods=['GET'])
+def download(id):
+    target_tune = Tune.query.get_or_404(id)
+    get_file_from_youtube(target_tune.url, 'mp3', '0')
+    target_tune.downloaded = True
+    try:
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'Unable to update'
 
 if __name__=='__main__':
     app.run(debug=True)
