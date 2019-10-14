@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 
 def get_tune_data(url):
-
     response = requests.get(url)
     page = response.text
     soup = BeautifulSoup(page,'html.parser')
