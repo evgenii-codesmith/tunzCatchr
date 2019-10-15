@@ -10,6 +10,7 @@ def get_file_from_youtube(url, file_format, audio_quality):
         ["youtube-dl","--extract-audio","--audio-format",file_format, "--audio-quality",audio_quality, url],
         stdout=subprocess.PIPE,stderr=subprocess.PIPE,) 
     
-    output, errors = proc.communicate()
-    print (output.decode('utf-8'), errors)
+    # output, errors = proc.communicate()
+    # return output.decode('utf-8'), errors
+    return proc
 

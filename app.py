@@ -76,7 +76,13 @@ def update(id):
 @app.route('/download/<int:id>', methods=['GET'])
 def download(id):
     target_tune = Tune.query.get_or_404(id)
-    get_file_from_youtube(target_tune.url, 'mp3', '0')
+    proc = get_file_from_youtube(target_tune.url, 'mp3', '0')
+    output, error = proc.communicate()
+        
+    if error:
+        return error
+    proc.wait()
+    print('wait...')
     target_tune.downloaded = True
     try:
         db.session.commit()
