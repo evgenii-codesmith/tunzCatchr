@@ -81,9 +81,9 @@ def download(id):
         
     if error:
         return error
-    proc.wait()
-    print('wait...')
+    
     target_tune.downloaded = True
+    
     try:
         db.session.commit()
         return redirect('/')
