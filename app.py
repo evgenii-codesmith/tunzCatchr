@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Response
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from url_parse import get_tune_data
 from file_download import get_file_from_youtube
+import threading
+import time
 
 app = Flask(__name__)
 
@@ -73,22 +75,35 @@ def update(id):
     else:
         return render_template('update.html', tune=target_tune)
 
+class myThread(threading.Thread):
+    def __init__(self, tune_id, file_format, audio_quality):
+        threading.Thread.__init__(self)
+        self.tune_id = tune_id
+        self.file_format = file_format
+        self.audio_quality = audio_quality
+    
+    def run(self):
+        target_tune = Tune.query.get_or_404(self.tune_id)
+        proc = get_file_from_youtube(target_tune.url, self.file_format, self.audio_quality)
+        output, error = proc.communicate()
+        
+        if error:
+            return error
+    
+        target_tune.downloaded = True
+        try:
+            db.session.commit()
+        except:
+            return 'Unable to update'
+
+        print(output)
+
 @app.route('/download/<int:id>', methods=['GET'])
 def download(id):
-    target_tune = Tune.query.get_or_404(id)
-    proc = get_file_from_youtube(target_tune.url, 'mp3', '0')
-    output, error = proc.communicate()
-        
-    if error:
-        return error
-    
-    target_tune.downloaded = True
-    
-    try:
-        db.session.commit()
-        return redirect('/')
-    except:
-        return 'Unable to update'
+    # new_thread = myThread(id, 'mp3', '0')
+    new_thread = myThread(id, 'mp3', '0')
+    new_thread.start()
+    return redirect('/')
 
 if __name__=='__main__':
     app.run(debug=True)
