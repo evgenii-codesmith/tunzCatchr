@@ -95,12 +95,9 @@ class myThread(threading.Thread):
             db.session.commit()
         except:
             return 'Unable to update'
-
-        print(output)
-
+            
 @app.route('/download/<int:id>', methods=['GET'])
 def download(id):
-    # new_thread = myThread(id, 'mp3', '0')
     new_thread = myThread(id, 'mp3', '0')
     new_thread.start()
     return redirect('/')
