@@ -13,7 +13,5 @@ def get_file_from_youtube(url, file_format, audio_quality):
          "--audio-quality", audio_quality, "-o", output_template, url,],
         stdout=subprocess.PIPE,stderr=subprocess.PIPE,) 
     
-    # output, errors = proc.communicate()
-    # return output.decode('utf-8'), errors
     return proc
 

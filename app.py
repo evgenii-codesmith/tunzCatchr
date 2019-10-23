@@ -86,7 +86,7 @@ def download(id):
     
     try:
         db.session.commit()
-        return redirect('/')
+        return '',204
     except:
         return 'Unable to update'
 
