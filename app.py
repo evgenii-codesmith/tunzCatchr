@@ -3,6 +3,7 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from url_parse import get_tune_data
 from file_download import get_file_from_youtube
+import multiprocessing
 
 app = Flask(__name__)
 
@@ -11,16 +12,18 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 class Tune(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(200), nullable=False)
-    artist = db.Column(db.String(100),nullable=True)
-    tune_name = db.Column(db.String(100),nullable=True)
+    artist = db.Column(db.String(100), nullable=True)
+    tune_name = db.Column(db.String(100), nullable=True)
     downloaded = db.Column(db.Boolean, default=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Tune %r>' % self.id
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -32,12 +35,13 @@ def index():
             db.session.add(new_tune)
             db.session.commit()
             return redirect('/')
-        except:
-            return('Issue while adding a new tune')
-        
+        except Exception as e:
+            return e
+
     else:
         all_tunes = Tune.query.order_by(Tune.date_created).all()
         return render_template('index.html', tunes=all_tunes)
+
 
 @app.route('/delete/<int:id>')
 def delete(id):
@@ -46,13 +50,14 @@ def delete(id):
         db.session.delete(target_tune)
         db.session.commit()
         return redirect('/')
-    except:
-        return 'Unable to delete tune %s' % id
+    except Exception as e:
+        return e
 
-@app.route('/update/<int:id>',methods = ['POST', 'GET'])
+
+@app.route('/update/<int:id>', methods=['POST', 'GET'])
 def update(id):
     target_tune = Tune.query.get_or_404(id)
-    
+
     if request.method == 'POST':
         target_tune.url = request.form['new_url']
         target_tune.artist = request.form['new_artist']
@@ -68,27 +73,20 @@ def update(id):
         try:
             db.session.commit()
             return redirect('/')
-        except:
-            return 'Unable to update'
+        except Exception as e:
+            return e
     else:
         return render_template('update.html', tune=target_tune)
+
 
 @app.route('/download/<int:id>', methods=['GET'])
 def download(id):
     target_tune = Tune.query.get_or_404(id)
-    proc = get_file_from_youtube(target_tune.url, 'mp3', '0')
-    output, error = proc.communicate()
-        
-    if error:
-        return error
-    
-    target_tune.downloaded = True
-    
-    try:
-        db.session.commit()
-        return '',204
-    except:
-        return 'Unable to update'
+    p = multiprocessing.Process(
+        target=get_file_from_youtube, args=(db, target_tune, 'mp3', '0'))
+    p.start()
+    return '', 204
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     app.run(debug=True)
