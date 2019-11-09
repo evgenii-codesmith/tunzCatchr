@@ -83,7 +83,7 @@ def update(id):
 def download(id):
     target_tune = Tune.query.get_or_404(id)
     p = multiprocessing.Process(
-        target=get_file_from_youtube, args=(db, target_tune, 'mp3', '0'))
+        target=get_file_from_youtube, args=(db, target_tune, 'flac', '0'))
     p.start()
     return '', 204
 

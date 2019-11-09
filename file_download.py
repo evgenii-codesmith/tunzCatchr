@@ -9,7 +9,7 @@ def get_file_from_youtube(db, target_tune, file_format, audio_quality):
     or specific bitrate ie '128K'
     See youtube-dl -h for more info.
     """
-    output_template = "./Downloaded/%(title)s.%(ext)s"
+    output_template = "./static/downloaded/%(title)s.%(ext)s"
     proc = subprocess.Popen(
         ["youtube-dl", "--extract-audio", "--audio-format", file_format,
          "--audio-quality", audio_quality, "-o", output_template,

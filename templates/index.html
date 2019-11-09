@@ -1,47 +1,55 @@
-{% extends 'base.html' %}
-
-{% block head %} 
+{% extends 'base.html' %} {% block head %}
 <h2>Tunes</h2>
-{% endblock %}
+{% endblock %} {% block body %}
 
-{% block body %}
+<div class="content">
+  <form action="/" method="post">
+    <div>
+      <input type="url" id="url" name="url" autofocus />
+      <input type="submit" value="Add" />
+    </div>
+  </form>
+  {% if tunes|length < 1 %}
+  <div>No tunes saved yet, add a new entry</div>
+  {% else %}
+  <table>
+    <tr>
+      <th>url</th>
+      <th>Artist</th>
+      <th>Tune</th>
+      <th>Added</th>
+      <th>Downloaded</th>
+      <th>Preview</th>
+      <th>Actions</th>
+    </tr>
+    {% for tune in tunes %}
+    <tr>
+      <td>{{ tune.url }}</td>
+      <td>{{ tune.artist }}</td>
+      <td>{{ tune.tune_name }}</td>
+      <td>{{ tune.date_created }}</td>
+      <td>{{ tune.downloaded }}</td>
+      <td>
+        <audio controls>
+          <source
+            src="{{ url_for('static', filename='downloaded/%s - %s.%s'|format(tune.artist, tune.tune_name, 'flac'))
+          }}"
+            type="audio/flac"
+          />
+          <p>Your browser doesn't support HTML5 audio.</p>
+        </audio>
+      </td>
+      <td>
+        <a href="/download/{{ tune.id }}">Download</a>
+        <a href="/delete/{{ tune.id }}">Delete</a>
+        <br />
+        <a href="/update/{{ tune.id }}">Update</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
 
-<div class='content'>
-        <form action='/' method="post">
-            <div>
-                <input type="url" id='url' name="url" autofocus>
-                <input type="submit" value="Add">
-            </div>
-        </form>
-        {% if tunes|length < 1 %}
-            <div>No tunes saved yet, add a new entry</div>
-        {% else %}
-        <table>
-            <tr>
-                <th>url</th>
-                <th>Artist</th>
-                <th>Tune</th>
-                <th>Added</th>
-                <th>Downloaded</th>
-                <th>Actions</th>
-            </tr>
-            {% for tune in tunes %}
-            <tr>
-                <td>{{ tune.url }}</td>
-                <td>{{ tune.artist }}</td>
-                <td>{{ tune.tune_name }}</td>
-                <td>{{ tune.date_created }}</td>
-                <td>{{ tune.downloaded }}</td>
-                <td>
-                    <a href="/download/{{ tune.id}}">Download</a>
-                    <a href="/delete/{{ tune.id }}">Delete</a>
-                    <br>
-                    <a href="/update/{{ tune.id }}">Update</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
+  {% endif %}
 </div>
-    
+
 {% endblock %}
