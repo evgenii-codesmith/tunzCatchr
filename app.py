@@ -15,9 +15,10 @@ db = SQLAlchemy(app)
 
 class Tune(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(200), nullable=False)
+    url = db.Column(db.String(200), unique=True, nullable=False)
     artist = db.Column(db.String(100), nullable=True)
     tune_name = db.Column(db.String(100), nullable=True)
+    audio_file_format = db.Column(db.String(10), nullable=True)
     downloaded = db.Column(db.Boolean, default=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -36,7 +37,8 @@ def index():
             db.session.commit()
             return redirect('/')
         except Exception as e:
-            return e
+            print(e)
+            return redirect('/')
 
     else:
         all_tunes = Tune.query.order_by(Tune.date_created).all()
